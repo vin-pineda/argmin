@@ -309,6 +309,18 @@ export function ExplorerClient({ initial }: { initial: DefaultScenario }) {
 
       {/* ===================== CHART GRID ===================== */}
       <div className="flex min-w-0 flex-col gap-5">
+        {/* Screen-reader status: announces run progress + the resulting numbers so
+            non-sighted users get the feedback the charts convey visually. */}
+        <p className="sr-only" role="status" aria-live="polite">
+          {optimizePending
+            ? "Optimizing portfolio."
+            : `Optimized ${METHOD_LABELS[optimize.method] ?? optimize.method}. Expected annual return ${pct(optimize.exp_return, 1)}, volatility ${pct(optimize.exp_vol, 1)}, tangency Sharpe ${num(frontier.tangency.sharpe, 2)}.`}
+        </p>
+        <p className="sr-only" role="status" aria-live="polite">
+          {backtestMut.isPending
+            ? "Running walk-forward backtest."
+            : `Backtest ready. Chosen strategy ${METHOD_LABELS[chosen] ?? chosen}, Sharpe ${num(chosenStrategy.metrics.sharpe, 2)}, max drawdown ${pct(chosenStrategy.metrics.max_drawdown, 1)}.`}
+        </p>
         <Reveal>
           <Panel>
             <ProvenanceBar

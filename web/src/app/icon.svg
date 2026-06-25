@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Argmin">
+  <!--
+    Argmin mark: a convex bowl (the objective f) with an amber beacon at its
+    lowest point — the minimizer itself, argmin f. The ink stroke flips for
+    light/dark browser chrome; the amber minimizer reads on both. Transparent bg.
+  -->
+  <style>
+    .ink { stroke: #14171c; }
+    @media (prefers-color-scheme: dark) { .ink { stroke: #e8eaed; } }
+  </style>
+  <path class="ink" d="M5.5 7 Q16 33 26.5 7" fill="none" stroke-width="2.8" stroke-linecap="round" />
+  <circle cx="16" cy="20" r="4.4" fill="#e6a94d" opacity="0.18" />
+  <circle cx="16" cy="20" r="2.9" fill="#e6a94d" />
+</svg>

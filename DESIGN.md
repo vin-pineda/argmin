@@ -2,8 +2,9 @@
 
 ## Theme
 Dark-locked, "quant research note typeset in a journal, meets a terminal." No section
-inverts. Near-sharp corners (4px). Hairline rules and a faint graph-paper grid are the
-structural motif; boxed panels are used only where dense data needs a container.
+inverts. Near-sharp corners (4px). Hairline rules are the structural motif (the earlier
+graph-paper grid was removed as an AI-dark tell); boxed panels are used only where dense
+data needs a container.
 
 ## Typography (the de-slop core)
 Two voices, no generic sans:
@@ -23,7 +24,7 @@ Hierarchy via serif weight + scale contrast, not via more families.
 ## Color
 - `--color-bg #0a0b0d`, `--color-panel #0d0f12`, `--color-elevated #14171c`.
 - Hairlines `rgba(255,255,255,.08)` / strong `.14`; grid `.035`.
-- Ink: `--color-fg #e8eaed`, dim `#969ba4`, faint `#5f636c`.
+- Ink: `--color-fg #e8eaed`, dim `#969ba4`, faint `#7c818b` (faint bumped to ~4.9:1 on bg).
 - **One signal accent — amber `#e6a94d`.** Used as ink and markers (chosen strategy,
   tangency point, primary CTA, active nav) — *not* as decorative tinted fills. The old
   `bg-accent-soft` pill/chip/row fills are removed; emphasis comes from accent ink, a

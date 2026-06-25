@@ -3,14 +3,23 @@
 > Pick-up-where-we-left-off doc. Read this first at the start of a session; update it at the end.
 > Full plan: [project_spec.md](./project_spec.md). Working agreements: [CLAUDE.md](./CLAUDE.md).
 
-**Last updated:** 2026-06-22
+**Last updated:** 2026-06-25
 
 ---
 
 ## Where we left off
-- **Phase:** **MVP complete** — full engine (M0–M5) **and** web v1 (M6 SHAPE + M7 CRAFT). The agreed
-  MVP scope (engine + a real bespoke front-end, excluding the ≥3-iteration design loop M8–M9 and
-  Vercel deploy M10) is done and verified end-to-end.
+- **Phase:** **M8 + M9 complete; M10 deploy artifacts built + validated, awaiting account-gated push.**
+  The engine (M0–M5) and web (M6–M9) are done and verified; the deploy is prepared (container image
+  builds + serves locally) and just needs the interactive Fly/Vercel logins to go live.
+- **M8 critique + M9 polish (this session):** Playwright-swept all 3 routes at 375/768/1440 — detector
+  clean, WCAG-AA contrast clean, controls labeled + keyboard-reachable, live optimize/frontier 200.
+  Added an Explore `aria-live` results announcer, a skip-to-content link, defensive nav sizing (killed a
+  2 px overflow at 375). Reduced-motion verified (0 errors, static hero, no hydration mismatch). Pruned
+  unused `remotion`/`@remotion/player`. `tsc` + `eslint` + `next build` clean.
+- **M10 deploy decision (resolved):** the engine is **too heavy for Vercel Python** (~1.7 GB installed;
+  even trimmed it's 349 MB vs the 250 MB function limit). It ships as a **container** instead. Built
+  `engine/Dockerfile` + `.dockerignore` + `fly.toml` (Fly.io scale-to-zero, cheapest live engine), ran
+  the image locally (healthz/optimize/frontier all 200), wrote `DEPLOY.md`. Web → Vercel (free).
 - **Engine:** data → estimators → 7 optimizers → walk-forward backtest → analytics/significance →
   FastAPI + CLI. Green: ruff + mypy --strict (31 files) + pytest **122 passed, 1 skipped**.
 - **Web (`web/`):** Next.js 16 (App Router) + Tailwind v4 + visx + KaTeX + Remotion + TanStack Query.
@@ -25,12 +34,13 @@
   the proxy at 8008.
 
 ## Next up
-1. **M8 — CRITIQUE.** Run the ≥3-iteration CRAFT→CRITIQUE→POLISH loop: impeccable `/critique` scorecard,
-   persona tests, Playwright a11y/contrast suite at 375/768/1440, Taste hard pre-flight. Log iterations
-   in `web/design/iterations/LOG.md`.
-2. **M9 — POLISH.** Emil micro-interactions, Core Web Vitals budget, full keyboard/AX, reduced-motion.
-3. **M10 — Deploy.** Web → Vercel; engine → Vercel Python / Fly.io. Lock CORS to the deployed origin.
-4. Minor: center the `/math` covariance heatmap in its panel; tighten hero vertical rhythm.
+1. **M10 — Execute the deploy** (account-gated, see `DEPLOY.md`):
+   a. Engine → Fly.io: `cd engine && fly auth login && fly launch --no-deploy --copy-config && fly deploy`.
+   b. Web → Vercel: root dir `web`, set `API_BASE_URL` (Fly URL) + `NEXT_PUBLIC_SITE_URL`, `vercel --prod`
+      (or drive via the Vercel MCP — account already connected).
+   c. Lock CORS: `fly secrets set ARGMIN_CORS_ALLOW_ORIGINS="https://<web>.vercel.app"`; verify a live
+      optimize/backtest round-trips 200 from the Vercel origin.
+2. Minor: center the `/math` covariance heatmap in its panel; tighten hero vertical rhythm.
 
 ---
 
@@ -49,12 +59,14 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] **M6** — SHAPE (design brief in `web/design/brief.md` + design read/dials)
 - [x] **M7** — CRAFT v1 (dark token system, visx charts on live engine, KaTeX math, Remotion intro,
       no-login instant-try; `tsc`+`eslint`+`next build` green)
-- [~] **M8** — CRITIQUE/POLISH de-slop pass done: typography overhaul (STIX Two Text serif +
-      Plex Mono, Geist removed) + box-language rework (tinted pills/eyebrows/chips → hairline
-      tags, status dots, serif titles, `§NN` markers). Playwright-tested every function at
-      375/768/1440; `next build` clean. Remaining: persona scorecard + a11y/contrast sweep.
-- [ ] **M9** — POLISH (micro-interactions, Core Web Vitals, keyboard/AX, reduced-motion)
-- [ ] **M10** — Deploy & stretch (live on Vercel, engine deployed; stretch goals)
+- [x] **M8** — CRITIQUE done: de-slop pass (STIX serif + Plex Mono; hairline tags / status dots /
+      `§NN`) + Playwright a11y/contrast/persona sweep at 375/768/1440 (detector clean, AA contrast
+      clean, controls labeled). Fixes: `aria-live` results announcer, skip link, nav overflow.
+- [x] **M9** — POLISH done: keyboard/AX (skip link + Radix + focus-visible + live regions),
+      reduced-motion verified (0 errors, static hero), micro-interactions tasteful, CWV (static
+      prerender, self-hosted fonts, pruned unused remotion). `tsc`+`eslint`+`next build` clean.
+- [~] **M10** — Deploy: **artifacts built + validated** (Dockerfile/fly.toml; image serves locally).
+      Remaining = the account-gated push (Fly login + deploy, Vercel web deploy, CORS lock).
 
 ## Build Checklist status
 All 16 items in **[project_spec.md PART 5](./project_spec.md)** are open. They're decisions baked into
@@ -65,7 +77,10 @@ separate pass.
 - **Risk-free rate** — RESOLVED: constant, configurable in `config/default.yaml` (`risk_free.annual_rate`,
   default 2%), surfaced in the API/provenance. T-bill series is a stretch.
 - **Web package manager** — RESOLVED: **pnpm** (Next.js 16, React 19, Tailwind v4).
-- **Engine hosting:** Vercel Python (Fluid Compute) vs. separate Fly.io/Railway service — decide at M10.
+- **Engine hosting** — RESOLVED at M10: **container host (Fly.io, scale-to-zero)**, NOT Vercel Python.
+  The engine (~1.7 GB installed; polars Rust runtime + scipy/sklearn/cvxpy) exceeds Vercel's 250 MB
+  function limit even trimmed (349 MB). Container = no size limit, warm process for CPU-heavy backtests,
+  ~$0 idle via scale-to-zero. Same image runs on Render/Railway. See `DEPLOY.md`.
 
 ---
 
@@ -79,6 +94,22 @@ separate pass.
   likewise available next session.
 
 ## Session log
+- **2026-06-25 (M8 + M9 finished; M10 deploy prepped)** — Ran the impeccable `critique` methodology
+  (driven directly, single-agent) with a Playwright sweep of `/`, `/explore`, `/math` at 375/768/1440:
+  de-slop detector clean (0), WCAG-AA contrast clean on all routes, every control labeled + keyboard-
+  reachable (Radix), live `/api/optimize`+`/api/frontier` round-trip 200. Verdict ≈ 34/40 — strong;
+  findings were a short polish list, not breakage. Applied: an Explore `aria-live="polite"` results
+  announcer (run progress + return/vol/Sharpe + chosen strategy/MaxDD for screen readers), a skip-to-
+  content link (first focusable, lands focus in `<main>`), and defensive nav sizing (removed a 2 px
+  overflow at 375). Verified reduced-motion under emulation: 0 console errors across all routes, hero
+  frontier resolves to its static fully-drawn state, no hydration mismatch. Pruned unused
+  `remotion`/`@remotion/player` (hero uses the HeroFrontier SVG). `tsc`+`eslint`+`next build` clean.
+  **M10:** measured the engine at ~1.7 GB installed (349 MB even trimmed) vs Vercel Python's 250 MB
+  limit → resolved hosting to a **container** (Fly.io scale-to-zero, cheapest live engine per the user's
+  cost ask). Wrote `engine/Dockerfile` (runs from source so `engine_root()` resolves; honors `$PORT`),
+  `.dockerignore`, `fly.toml`; built + ran the image — healthz/optimize/frontier all 200. Authored
+  `DEPLOY.md`, updated `.env.example`, `DESIGN.md` (grid/fg-faint drift), `CHANGELOG.md`. Remaining =
+  the account-gated push (Fly login, Vercel web deploy, CORS lock).
 - **2026-06-22 (M9 cont.: deeper de-slop)** — Stripped the remaining "tasteful-AI-dark" tells the
   user kept reacting to: removed the graph-paper grid motif everywhere (+ its CSS), the eyebrow
   kicker over every section (+ the `Eyebrow` primitive; reconciliation/honesty use `§NN`),

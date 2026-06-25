@@ -24,7 +24,11 @@ const stixSerif = STIX_Two_Text({
 });
 
 export const metadata: Metadata = {
-  title: "Argmin — Portfolio Optimization, Honestly Backtested",
+  // Browser-tab text is just the wordmark; sub-pages read "Page · Argmin".
+  title: {
+    default: "Argmin",
+    template: "%s · Argmin",
+  },
   description:
     "Seven classical and modern allocation models, evaluated with honest, cost-aware, walk-forward out-of-sample backtests. The math, shown.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -44,9 +48,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-bg text-fg">
+        <a
+          href="#main-content"
+          className="sr-only rounded-[3px] focus:not-sr-only focus:absolute focus:top-3 focus:left-4 focus:z-50 focus:border focus:border-accent focus:bg-elevated focus:px-3 focus:py-2 focus:font-mono focus:text-sm focus:text-fg"
+        >
+          Skip to content
+        </a>
         <Providers>
           <Nav />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>

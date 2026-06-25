@@ -1,0 +1,25 @@
+# Render Blueprint — the Argmin engine as a Docker web service.
+# https://render.com/docs/blueprint-spec
+#
+# Deploy: Render dashboard → New → Blueprint → connect the `argmin` repo → Apply.
+# Render reads this file, builds engine/Dockerfile, and wires the env vars below.
+# Free plan: sleeps after ~15 min idle (~50 s cold start); $0.
+services:
+  - type: web
+    name: argmin-engine
+    runtime: docker
+    dockerfilePath: ./engine/Dockerfile
+    dockerContext: ./engine
+    plan: free
+    region: virginia          # us-east, nearest Vercel's default function region
+    healthCheckPath: /healthz  # rate-limit-exempt in the API
+    autoDeploy: true
+    envVars:
+      - key: ARGMIN_ENV
+        value: production
+      - key: ARGMIN_LOG_JSON
+        value: "true"
+      - key: ARGMIN_DATA_DIR
+        value: /app/engine/data
+      - key: ARGMIN_CORS_ALLOW_ORIGINS
+        value: https://argmin.tech

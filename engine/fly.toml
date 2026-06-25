@@ -1,0 +1,49 @@
+# Argmin engine on Fly.io — cheapest "real engine" host for a low-traffic
+# portfolio piece: the machine STOPS when idle (min_machines_running = 0) and
+# auto-starts on the next request (~2-5s resume), so you pay cents, not for a
+# 24/7 server.
+#
+# First deploy:
+#   cd engine
+#   fly auth login                      # interactive (run via `! fly auth login`)
+#   fly launch --no-deploy --copy-config --name argmin-engine   # or pick a name
+#   fly secrets set ARGMIN_CORS_ALLOW_ORIGINS="https://<your-web>.vercel.app"
+#   fly deploy
+#
+# Then point the web app's API_BASE_URL at https://argmin-engine.fly.dev
+
+app = "argmin-engine"            # change to your chosen app name
+primary_region = "iad"           # us-east; pick the region nearest you
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"    # scale to zero when idle  →  ~$0
+  auto_start_machines = true     # wake on the next request
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 20
+    hard_limit = 40
+
+  # Liveness check is exempt from the engine's rate limiter (see api/app.py).
+  [[http_service.checks]]
+    method = "GET"
+    path = "/healthz"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"                 # scipy/cvxpy/sklearn working set; 512mb is tight
+
+[env]
+  ARGMIN_ENV = "production"
+  ARGMIN_LOG_JSON = "true"
+  ARGMIN_DATA_DIR = "/app/engine/data"
+  # ARGMIN_CORS_ALLOW_ORIGINS is set via `fly secrets set ...` once the web URL exists.

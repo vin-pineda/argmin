@@ -23,7 +23,7 @@ export function Nav() {
         <Link href="/" className="flex items-baseline gap-2" aria-label="Argmin home">
           <span className="font-mono text-sm font-semibold tracking-tight text-fg">argmin</span>
           <span className="hidden font-mono text-[10px] text-fg-faint sm:inline">
-            arg&thinsp;min&nbsp;f(w)
+            f(w)
           </span>
         </Link>
 
@@ -33,7 +33,7 @@ export function Nav() {
               key={l.href}
               href={l.href}
               className={cn(
-                "rounded-[3px] px-3 py-1.5 font-mono text-[12.5px] tracking-tight transition-colors",
+                "rounded-[3px] px-2.5 py-1.5 font-mono text-[12.5px] tracking-tight transition-colors sm:px-3",
                 isActive(l.href) ? "text-accent" : "text-fg-dim hover:text-fg",
               )}
             >
@@ -45,7 +45,7 @@ export function Nav() {
             target="_blank"
             rel="noreferrer"
             aria-label="Vincent Pineda on LinkedIn"
-            className="ml-1 rounded-[3px] p-1.5 text-fg-dim transition-all duration-200 hover:-translate-y-px hover:text-accent"
+            className="ml-0.5 rounded-[3px] p-1.5 text-fg-dim transition-all duration-200 hover:-translate-y-px hover:text-accent sm:ml-1"
           >
             <LinkedinLogo size={18} weight="fill" />
           </a>

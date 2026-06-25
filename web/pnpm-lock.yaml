@@ -29,9 +29,6 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.10
         version: 1.2.10(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@remotion/player':
-        specifier: ^4.0.481
-        version: 4.0.481(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.101.0
         version: 5.101.0(react@19.2.4)
@@ -98,9 +95,6 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
-      remotion:
-        specifier: ^4.0.481
-        version: 4.0.481(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -895,12 +889,6 @@ packages:
   '@redocly/openapi-core@1.34.15':
     resolution: {integrity: sha512-HAwCnNyKcs5XGQqms+9t7OdAPM/5TDstmhF+0i7tdCFato2QKuYIlyWETwkXd8c5zbltr1oB+6y9NTeQLr2d6Q==}
     engines: {node: '>=18.17.0', npm: '>=9.5.0'}
-
-  '@remotion/player@4.0.481':
-    resolution: {integrity: sha512-+oRSxxzA6B7J2RvWBAaHAGL2IchybA3TnK6e0/IAJfTUa9m0wN95GLels9MA2/EYuEQL+9Ydtx/lZSESJcyL5A==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -2597,12 +2585,6 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  remotion@4.0.481:
-    resolution: {integrity: sha512-OurH3eP6zoS9fwAOTpOy73kz1k7v6cshLoig7jYEI/mfn5fFdXU5/fiBOQom5N4QidnVyDF7ix/SATyv6AY2Cg==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -3647,12 +3629,6 @@ snapshots:
       yaml-ast-parser: 0.0.43
     transitivePeerDependencies:
       - supports-color
-
-  '@remotion/player@4.0.481(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      remotion: 4.0.481(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@rtsao/scc@1.1.0': {}
 
@@ -5451,11 +5427,6 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
-
-  remotion@4.0.481(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
-    dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
 
   require-from-string@2.0.2: {}
 
