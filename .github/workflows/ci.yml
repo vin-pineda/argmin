@@ -56,7 +56,11 @@ jobs:
         working-directory: web
     steps:
       - uses: actions/checkout@v4
+      # action-setup runs at the repo root (working-directory applies to `run:`
+      # only), so point it at web/package.json to read the pinned pnpm version.
       - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
       - uses: actions/setup-node@v4
         with:
           node-version: 20
