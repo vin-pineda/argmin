@@ -1,0 +1,17 @@
+# Keep the image lean + the build cache stable. NOTE: data/ is intentionally
+# NOT ignored — the committed Parquet snapshot is the reproducibility source the
+# API reads at runtime.
+.venv/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+*.duckdb
+tests/
+README.md
+Dockerfile
+.dockerignore
+fly.toml

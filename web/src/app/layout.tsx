@@ -44,9 +44,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-bg text-fg">
+        <a
+          href="#main-content"
+          className="sr-only rounded-[3px] focus:not-sr-only focus:absolute focus:top-3 focus:left-4 focus:z-50 focus:border focus:border-accent focus:bg-elevated focus:px-3 focus:py-2 focus:font-mono focus:text-sm focus:text-fg"
+        >
+          Skip to content
+        </a>
         <Providers>
           <Nav />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>

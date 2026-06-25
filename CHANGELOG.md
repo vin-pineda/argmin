@@ -5,6 +5,26 @@ All notable changes to Argmin are recorded here. Format loosely follows
 
 ## [Unreleased]
 
+### M8–M10 — Critique, polish, deploy prep (2026-06-25)
+- **M8 critique (Playwright-driven).** Swept `/`, `/explore`, `/math` at 375/768/1440. Deterministic
+  de-slop detector clean (0 findings); WCAG-AA contrast clean on all routes; every control labeled and
+  keyboard-reachable (Radix); primary action verified live (`/api/optimize` + `/api/frontier` → 200).
+- **A11y fixes.** Added an `aria-live="polite"` status region to Explore that announces run progress and
+  the resulting numbers (return/vol/Sharpe, chosen strategy + max drawdown) for screen-reader users; a
+  skip-to-content link as the first focusable element; defensive nav sizing that removes a ~2 px
+  horizontal overflow at 375 px.
+- **M9 polish.** Reduced-motion verified under emulation (0 console errors across all routes; hero
+  frontier resolves to its static fully-drawn state — no hydration mismatch). Pruned the unused
+  `remotion` + `@remotion/player` deps (the hero uses the `HeroFrontier` SVG now), trimming install/CWV
+  surface. `tsc` + `eslint` + `next build` all clean.
+- **M10 deploy prep.** Determined the engine (~1.7 GB installed; polars Rust runtime + scipy/sklearn/
+  cvxpy) exceeds Vercel Python's 250 MB function limit, so it ships as a **container** instead. Added
+  `engine/Dockerfile` (runs from source so `engine_root()` path resolution holds; honors `$PORT`),
+  `engine/.dockerignore`, and `engine/fly.toml` (Fly.io scale-to-zero — cheapest "real engine"). Built
+  + ran the image locally: `healthz`/`optimize`/`frontier` all 200. Added `DEPLOY.md` runbook and
+  production env notes. Web → Vercel (free); CORS locks to the deployed origin via
+  `ARGMIN_CORS_ALLOW_ORIGINS`.
+
 ### Added — Engine (M0–M5)
 - **M0 Foundation.** `uv` project (Python 3.12), pydantic config (`ArgminConfig` + env `Settings`),
   structlog. Data layer: yfinance → Polars → Parquet/DuckDB; frozen price snapshot of the 11-ETF
