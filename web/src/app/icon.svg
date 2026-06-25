@@ -1,20 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Argmin">
   <!--
-    Argmin mark: a leaning "A" where the right flank is an amber *descent* down the
-    slope to the minimizer dot at its foot — argmin, drawn. The ink strokes flip
-    for light/dark browser chrome; the amber signal + minimizer read on both.
-    Transparent background.
+    Argmin mark: a convex bowl (the objective f) with an amber beacon at its
+    lowest point — the minimizer itself, argmin f. The ink stroke flips for
+    light/dark browser chrome; the amber minimizer reads on both. Transparent bg.
   -->
   <style>
     .ink { stroke: #14171c; }
     @media (prefers-color-scheme: dark) { .ink { stroke: #e8eaed; } }
   </style>
-  <g fill="none" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round">
-    <path class="ink" d="M6.5 25.5 L15.5 6.5" />
-    <path class="ink" d="M9.8 18.5 H21.8" />
-    <path d="M15.5 6.5 L25 25" stroke="#e6a94d" />
-  </g>
-  <!-- minimizer: a beacon where the descent lands (echoes the tangency pulse) -->
-  <circle cx="25" cy="25" r="4.2" fill="#e6a94d" opacity="0.16" />
-  <circle cx="25" cy="25" r="2.6" fill="#e6a94d" />
+  <path class="ink" d="M5.5 7 Q16 33 26.5 7" fill="none" stroke-width="2.8" stroke-linecap="round" />
+  <circle cx="16" cy="20" r="4.4" fill="#e6a94d" opacity="0.18" />
+  <circle cx="16" cy="20" r="2.9" fill="#e6a94d" />
 </svg>
