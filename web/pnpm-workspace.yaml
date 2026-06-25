@@ -1,7 +1,13 @@
-allowBuilds:
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+# pnpm 10+ reads settings from here (even for a single-package project).
+# Explicitly approve the native build scripts pnpm blocks by default so
+# `pnpm install --frozen-lockfile` doesn't fail in CI (CI=true makes ignored
+# builds fatal). sharp = Next.js image optimization; unrs-resolver = the
+# eslint-config-next resolver; @tailwindcss/oxide = Tailwind v4 engine.
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
   - "@tailwindcss/oxide"
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+  "@tailwindcss/oxide": true
