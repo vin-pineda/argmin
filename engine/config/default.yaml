@@ -1,0 +1,85 @@
+# Argmin — default scenario configuration.
+# This file drives `argmin backtest` and the precomputed default web scenario.
+# Reproducibility: the engine reads the committed Parquet snapshot; it never
+# live-fetches yfinance during a backtest/test run.
+
+# ── Universe (default cross-asset ETFs, ~2007→present) ────────────────────────
+# Spans 2008 GFC, 2020 COVID, 2022 selloff. This is also the API whitelist.
+universe:
+  - SPY   # US large cap
+  - QQQ   # US tech / Nasdaq-100
+  - EFA   # Developed ex-US equity
+  - EEM   # Emerging markets equity
+  - AGG   # US aggregate bonds
+  - TLT   # Long US Treasuries
+  - LQD   # Investment-grade credit
+  - HYG   # High-yield credit
+  - VNQ   # US REITs
+  - GLD   # Gold
+  - DBC   # Broad commodities
+
+# ── Data window & basis ───────────────────────────────────────────────────────
+data:
+  start: "2007-01-01"
+  end: "2024-12-31"
+  # Total-return basis: yfinance auto-adjusted close (dividends reinvested).
+  price_field: "adj_close"
+  # Panel alignment for unequal ETF inception dates: drop rows before the
+  # latest common inception (common-start), then assert no internal NaNs.
+  alignment: "common_start"
+  trading_days_per_year: 252
+
+# ── Risk-free rate ────────────────────────────────────────────────────────────
+# Constant annualized rate (Build-Checklist decision: constant, configurable,
+# surfaced in the API). Used consistently across Max-Sharpe, Sharpe, Sortino,
+# PSR/DSR.
+risk_free:
+  mode: "constant"        # constant | series (series = stretch, not in MVP)
+  annual_rate: 0.02
+
+# ── Estimators ────────────────────────────────────────────────────────────────
+estimators:
+  mu: "sample"            # sample | ewma | capm
+  cov: "ledoit_wolf"      # sample | ledoit_wolf | ewma
+  ewma_halflife_days: 63  # ~one quarter
+
+# ── Default optimizer for the headline scenario ───────────────────────────────
+optimizer:
+  method: "max_sharpe"    # see optimizers registry
+  constraints:
+    long_only: true
+    fully_invested: true
+    max_weight: 0.40
+    min_weight: 0.0
+    leverage_cap: null
+
+# ── Black-Litterman (used only when method = black_litterman) ──────────────────
+black_litterman:
+  delta: 2.5              # risk-aversion (market price of risk)
+  tau: 0.05
+  views: []               # empty ⇒ posterior collapses to the prior
+
+# ── Walk-forward backtest ─────────────────────────────────────────────────────
+backtest:
+  rebalance: "monthly"        # monthly rebalancing
+  lookback_years: 3           # 3-yr rolling estimation window
+  transaction_cost_bps: 10.0  # bps × turnover, charged on every rebalance
+  # Benchmarks also pay the same transaction costs (honest comparison).
+  benchmarks_bear_costs: true
+  benchmarks:
+    - equal_weight            # 1/N over the universe
+    - sixty_forty             # 60% SPY / 40% AGG
+    - spy                     # SPY buy & hold
+  # Public-endpoint safety caps (mirrored/enforced in the API).
+  max_years: 20
+  max_assets: 15
+  max_models_per_request: 7
+
+# ── Significance ──────────────────────────────────────────────────────────────
+significance:
+  bootstrap_samples: 1000
+  bootstrap_block_size: 21    # ~1 month, stationary block bootstrap
+  dsr_trials: 7               # number of strategies tried (DSR adjustment)
+
+# ── Reproducibility ───────────────────────────────────────────────────────────
+random_seed: 42

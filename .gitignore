@@ -1,0 +1,49 @@
+# ── Secrets / env ────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+web/.env.local
+
+# ── Python / engine ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.uv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+dist/
+build/
+
+# DuckDB store is regenerable from the committed Parquet snapshot — don't commit it.
+engine/data/*.duckdb
+engine/data/*.duckdb.wal
+# Engine run outputs (figures, tearsheets) are generated artifacts.
+engine/outputs/
+
+# NOTE: engine/data/cache/*.parquet (the frozen price snapshot) IS committed
+# intentionally — it is the reproducibility source of truth.
+
+# ── Node / web ───────────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+web/playwright-report/
+web/test-results/
+
+# ── OS / editor ──────────────────────────────────────────────────────────────
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Playwright MCP scratch output
+.playwright-mcp/
+*.playwright-mcp.*

@@ -1,0 +1,969 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Argmin API",
+    "summary": "Portfolio optimization + walk-forward backtesting (stateless, no login).",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Healthz",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/optimize": {
+      "post": {
+        "summary": "Optimize",
+        "operationId": "optimize_optimize_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OptimizeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OptimizeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/backtest": {
+      "post": {
+        "summary": "Backtest",
+        "operationId": "backtest_backtest_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BacktestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BacktestResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frontier": {
+      "get": {
+        "summary": "Frontier",
+        "operationId": "frontier_frontier_get",
+        "parameters": [
+          {
+            "name": "universe",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Universe"
+            }
+          },
+          {
+            "name": "as_of",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "As Of"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontierResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BacktestRequest": {
+        "properties": {
+          "universe": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Universe"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "constraints": {
+            "$ref": "#/components/schemas/Constraints"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End"
+          },
+          "rebalance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rebalance"
+          },
+          "lookback_years": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lookback Years"
+          },
+          "transaction_cost_bps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transaction Cost Bps"
+          },
+          "benchmarks": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Benchmarks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "universe",
+          "method"
+        ],
+        "title": "BacktestRequest"
+      },
+      "BacktestResponse": {
+        "properties": {
+          "tickers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tickers"
+          },
+          "dates": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Dates"
+          },
+          "strategies": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StrategyResult"
+            },
+            "type": "object",
+            "title": "Strategies"
+          },
+          "significance": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Significance"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tickers",
+          "dates",
+          "strategies",
+          "significance",
+          "provenance"
+        ],
+        "title": "BacktestResponse"
+      },
+      "Constraints": {
+        "properties": {
+          "long_only": {
+            "type": "boolean",
+            "title": "Long Only",
+            "default": true
+          },
+          "fully_invested": {
+            "type": "boolean",
+            "title": "Fully Invested",
+            "default": true
+          },
+          "max_weight": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Weight"
+          },
+          "min_weight": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Weight"
+          },
+          "leverage_cap": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leverage Cap"
+          }
+        },
+        "type": "object",
+        "title": "Constraints",
+        "description": "Allocation constraints for ``/optimize`` and every optimizer.\n\nDefaults encode the canonical long-only, fully-invested portfolio."
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "type": "string",
+            "title": "Error"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error",
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "description": "Typed error contract. ``error`` is a stable machine code; ``detail`` is human-readable."
+      },
+      "FrontierPointModel": {
+        "properties": {
+          "ret": {
+            "type": "number",
+            "title": "Ret"
+          },
+          "vol": {
+            "type": "number",
+            "title": "Vol"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ret",
+          "vol",
+          "sharpe"
+        ],
+        "title": "FrontierPointModel"
+      },
+      "FrontierPortfolio": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "tickers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tickers"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Weights"
+          },
+          "exp_return": {
+            "type": "number",
+            "title": "Exp Return"
+          },
+          "exp_vol": {
+            "type": "number",
+            "title": "Exp Vol"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          },
+          "risk_contrib": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Risk Contrib"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "tickers",
+          "weights",
+          "exp_return",
+          "exp_vol",
+          "sharpe",
+          "risk_contrib"
+        ],
+        "title": "FrontierPortfolio",
+        "description": "A named portfolio on/under the frontier (tangency or min-variance)."
+      },
+      "FrontierResponse": {
+        "properties": {
+          "tickers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tickers"
+          },
+          "frontier_points": {
+            "items": {
+              "$ref": "#/components/schemas/FrontierPointModel"
+            },
+            "type": "array",
+            "title": "Frontier Points"
+          },
+          "tangency": {
+            "$ref": "#/components/schemas/FrontierPortfolio"
+          },
+          "min_var": {
+            "$ref": "#/components/schemas/FrontierPortfolio"
+          },
+          "random_cloud": {
+            "$ref": "#/components/schemas/RandomCloud"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tickers",
+          "frontier_points",
+          "tangency",
+          "min_var",
+          "random_cloud",
+          "provenance"
+        ],
+        "title": "FrontierResponse"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "engine_hash": {
+            "type": "string",
+            "title": "Engine Hash"
+          },
+          "universe": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Universe"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version",
+          "engine_hash",
+          "universe"
+        ],
+        "title": "HealthResponse"
+      },
+      "OptimizeRequest": {
+        "properties": {
+          "universe": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Universe"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "constraints": {
+            "$ref": "#/components/schemas/Constraints"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "mu_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mu Method"
+          },
+          "cov_method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cov Method"
+          },
+          "risk_free": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Free"
+          }
+        },
+        "type": "object",
+        "required": [
+          "universe",
+          "method"
+        ],
+        "title": "OptimizeRequest"
+      },
+      "OptimizeResponse": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "tickers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tickers"
+          },
+          "weights": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Weights"
+          },
+          "exp_return": {
+            "type": "number",
+            "title": "Exp Return"
+          },
+          "exp_vol": {
+            "type": "number",
+            "title": "Exp Vol"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          },
+          "risk_contrib": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Risk Contrib"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "tickers",
+          "weights",
+          "exp_return",
+          "exp_vol",
+          "sharpe",
+          "risk_contrib",
+          "provenance"
+        ],
+        "title": "OptimizeResponse"
+      },
+      "Provenance": {
+        "properties": {
+          "engine_hash": {
+            "type": "string",
+            "title": "Engine Hash"
+          },
+          "risk_free": {
+            "type": "number",
+            "title": "Risk Free"
+          },
+          "data_start": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Start"
+          },
+          "data_end": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data End"
+          },
+          "as_of": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of"
+          },
+          "oos_only": {
+            "type": "boolean",
+            "title": "Oos Only",
+            "default": true
+          },
+          "generated_utc": {
+            "type": "string",
+            "title": "Generated Utc"
+          }
+        },
+        "type": "object",
+        "required": [
+          "engine_hash",
+          "risk_free",
+          "data_start",
+          "data_end",
+          "generated_utc"
+        ],
+        "title": "Provenance",
+        "description": "Where a result came from \u2014 the honesty/reproducibility envelope.\n\nCarried on every successful response so the web can show *exactly* which\ndata window, risk-free rate, and engine revision produced the numbers, and\nassert that the result is out-of-sample."
+      },
+      "RandomCloud": {
+        "properties": {
+          "vol": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Vol"
+          },
+          "ret": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Ret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vol",
+          "ret"
+        ],
+        "title": "RandomCloud"
+      },
+      "StrategyResult": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/TearsheetModel"
+          },
+          "equity_curve": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Equity Curve"
+          },
+          "drawdown": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Drawdown"
+          },
+          "rolling_sharpe": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Rolling Sharpe"
+          },
+          "weights_over_time": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Weights Over Time"
+          },
+          "rebalance_dates": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Rebalance Dates"
+          },
+          "turnover": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Turnover"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "metrics",
+          "equity_curve",
+          "drawdown",
+          "rolling_sharpe",
+          "weights_over_time",
+          "rebalance_dates",
+          "turnover"
+        ],
+        "title": "StrategyResult"
+      },
+      "TearsheetModel": {
+        "properties": {
+          "total_return": {
+            "type": "number",
+            "title": "Total Return"
+          },
+          "cagr": {
+            "type": "number",
+            "title": "Cagr"
+          },
+          "ann_return": {
+            "type": "number",
+            "title": "Ann Return"
+          },
+          "ann_vol": {
+            "type": "number",
+            "title": "Ann Vol"
+          },
+          "sharpe": {
+            "type": "number",
+            "title": "Sharpe"
+          },
+          "sortino": {
+            "type": "number",
+            "title": "Sortino"
+          },
+          "max_drawdown": {
+            "type": "number",
+            "title": "Max Drawdown"
+          },
+          "calmar": {
+            "type": "number",
+            "title": "Calmar"
+          },
+          "var_95": {
+            "type": "number",
+            "title": "Var 95"
+          },
+          "cvar_95": {
+            "type": "number",
+            "title": "Cvar 95"
+          },
+          "hit_rate": {
+            "type": "number",
+            "title": "Hit Rate"
+          },
+          "best_day": {
+            "type": "number",
+            "title": "Best Day"
+          },
+          "worst_day": {
+            "type": "number",
+            "title": "Worst Day"
+          },
+          "avg_turnover": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Turnover"
+          },
+          "psr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Psr"
+          },
+          "dsr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dsr"
+          },
+          "sharpe_ci_low": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sharpe Ci Low"
+          },
+          "sharpe_ci_high": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sharpe Ci High"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_return",
+          "cagr",
+          "ann_return",
+          "ann_vol",
+          "sharpe",
+          "sortino",
+          "max_drawdown",
+          "calmar",
+          "var_95",
+          "cvar_95",
+          "hit_rate",
+          "best_day",
+          "worst_day"
+        ],
+        "title": "TearsheetModel",
+        "description": "JSON-native mirror of :class:`argmin.analytics.metrics.Tearsheet`, plus\nPSR/DSR and a bootstrap Sharpe CI so the web has every headline metric in one\nobject."
+      }
+    }
+  }
+}

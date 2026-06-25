@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engine:
+    name: engine (lint • types • tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+
+      # Install dev tooling + the test oracles (PyPortfolioOpt/quantstats are
+      # used ONLY to cross-check the from-scratch implementations).
+      - name: Install dependencies
+        run: uv sync --group dev --group oracles
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: Mypy (strict)
+        run: uv run mypy src
+
+      # Tests read the committed Parquet snapshot — no network / yfinance in CI.
+      - name: Pytest
+        run: uv run pytest -q
+
+  web:
+    name: web (lint • types • build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      # Builds against the committed default-scenario.json (instant first paint);
+      # no engine needed at build time.
+      - run: pnpm build
+      # Playwright a11y/contrast/visual @ 375/768/1440 is wired in the CRITIQUE
+      # milestone (M8); enable once the spec tests land:
+      # - run: pnpm exec playwright install --with-deps chromium
+      # - run: pnpm exec playwright test
