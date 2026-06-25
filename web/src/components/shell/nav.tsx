@@ -23,7 +23,7 @@ export function Nav() {
         <Link href="/" className="flex items-baseline gap-2" aria-label="Argmin home">
           <span className="font-mono text-sm font-semibold tracking-tight text-fg">argmin</span>
           <span className="hidden font-mono text-[10px] text-fg-faint sm:inline">
-            arg&thinsp;min&nbsp;f(w)
+            f(w)
           </span>
         </Link>
 

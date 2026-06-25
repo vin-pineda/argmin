@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Argmin">
+  <!--
+    Argmin mark: a bold "A" (the wordmark initial) with an amber crossbar — the
+    bar is what reads the form unmistakably as an A, and carries the one signal
+    color. Ink legs flip for light/dark browser chrome. Transparent background.
+  -->
+  <style>
+    .ink { stroke: #14171c; }
+    @media (prefers-color-scheme: dark) { .ink { stroke: #e8eaed; } }
+  </style>
+  <g fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path class="ink" d="M6 26.5 L16 5 L26 26.5" />
+    <path d="M10 18.5 H22" stroke="#e6a94d" />
+  </g>
+</svg>

@@ -27,7 +27,7 @@ interface MathExtras {
 const mathExtras = mathExtrasJson as MathExtras;
 
 export const metadata: Metadata = {
-  title: "Methodology - Argmin",
+  title: "Methodology",
   description:
     "The math behind Argmin: mean-variance, shrinkage, risk parity, HRP, max-diversification, Black-Litterman, and deflated significance, on live data.",
 };

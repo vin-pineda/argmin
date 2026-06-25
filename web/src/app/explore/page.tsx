@@ -5,7 +5,7 @@ import { Reveal } from "@/components/landing/reveal";
 import { defaultScenario } from "@/lib/api/scenario";
 
 export const metadata: Metadata = {
-  title: "Explore - Argmin",
+  title: "Explore",
   description:
     "Run seven allocation models live: efficient frontier, walk-forward OOS backtest, costs, drawdowns, and significance - the math, shown.",
 };

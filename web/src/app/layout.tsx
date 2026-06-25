@@ -24,7 +24,11 @@ const stixSerif = STIX_Two_Text({
 });
 
 export const metadata: Metadata = {
-  title: "Argmin — Portfolio Optimization, Honestly Backtested",
+  // Browser-tab text is just the wordmark; sub-pages read "Page · Argmin".
+  title: {
+    default: "Argmin",
+    template: "%s · Argmin",
+  },
   description:
     "Seven classical and modern allocation models, evaluated with honest, cost-aware, walk-forward out-of-sample backtests. The math, shown.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
